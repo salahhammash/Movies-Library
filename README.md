@@ -4,8 +4,8 @@
 **Author Name** : SALAH ALDEEN HAMMASH
 
 ## WRRC
-?[imgWRRC](./CLASS%2011.png) 
-
+![imgWRRC](./CLASS%2011.png) 
+![imgWRRC](./CLASS%2012.png)
 
 ## Overview
 <!-- What are the steps that a user must take in order to build this app on their own machine and get it running? -->
