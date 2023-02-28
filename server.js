@@ -1,35 +1,46 @@
 `use strict`
 
+//import express 
 const express = require("express");
+
+//import cors
 const cors = require("cors");
 
 const server = express()
 
-server.use(cors())
-
-//port
-const PORT = 3000
-
-
 const axios = require('axios');
 require('dotenv').config();
 
+//import postgress library 
+const pg = require("pg")
+
 server.use(cors());
 
+server.use(express.json()); // to convert from [] to json to show me the info
+//port
 
-//router
+const PORT = 3000;
+
+//DB obj
+
+const client = new pg.Client('postgresql://localhost:5432/addmovie');
+
+
+//routs
 server.get("/", homeHandler);
 server.get("/favorite", favoriteHandler)
 server.get("/trending", trendingHandler);
 server.get('/search', searchHandler);
 server.get('/idd', movieIdHandler);
+server.get("/getMovies", getMoviewHandler);
+server.post("/getMovies", postMovieHandler);
+// server.post("/getMovies", secMovieHandler);
+
 server.get('/person', personHandler);
-
-
-
 server.get("*", defultHandler);
-
 server.use(errorHandler);
+
+
 
 
 //constroctor
@@ -143,7 +154,7 @@ function searchHandler(req, res) {
     }
 }
 
-
+//movieHandler
 function movieIdHandler(req, res) {
     try {
         // https://api.themoviedb.org/3/movie/{movie_id}/videos?api_key=<<api_key>>&language=en-US
@@ -185,23 +196,66 @@ function personHandler(req, res) {
                 //     return movieId;
                 res.send(c.data)
             })
-        // console.log(mapResult3);
-        // res.status(200).json(mapResult3)
+            // console.log(mapResult3);
+            // res.status(200).json(mapResult3)
 
-        .catch ((error) => {
-            // res.status(500).send(error)
-        })
+            .catch((error) => {
+                // res.status(500).send(error)
+            })
     }
 
-           
 
- 
+
+
     catch (error) {
-    errorHandler(error, req, res)
-}
+        errorHandler(error, req, res)
+    }
 }
 
 
+//data base getMoviewHandler
+function getMoviewHandler(req, res) {
+    const sql = `SELECT * from firstMOV`;// to get all data from the table 
+    client.query(sql)
+        .then((data) => {
+            res.send(data.rows)
+
+        })
+        .catch((err) => {
+            errorHandler(err, req, res)
+        })
+}
+
+function postMovieHandler(req, res) {
+    const mov = req.body;
+    const sql = `INSERT INTO firstmov (title,release_date,poster_path,overview)
+VALUES ('${mov.title}','${mov.release_date}','${mov.poster_path}','${mov.overview}');`
+
+    client.query(sql)
+        .then((data) => {
+            res.send(data.rows)
+        })
+
+        .catch ((error) => {
+            res.status(500).send(error)
+        })
+}
+
+
+// function secMovieHandler(req, res) {
+//     const mov = req.body;
+//     const sql = `INSERT INTO sec (title,release_date,poster_path,overview)
+// VALUES ('${mov.title}','${mov.release_date}','${mov.poster_path}','${mov.overview}');`
+
+//     client.query(sql)
+//         .then((data) => {
+//             res.send(data.rows)
+//         })
+
+//         .catch ((error) => {
+//             res.status(500).send(error)
+//         })
+// }
 
 
 
@@ -218,6 +272,10 @@ function errorHandler(error, req, res) {
 
 
 //server port
-server.listen(PORT, () => {
-    console.log("listining to 3000");
-})
+
+client.connect()
+    .then(
+        server.listen(PORT, () => {
+            console.log("listining to 3000");
+        })
+    )
