@@ -8,7 +8,7 @@ const cors = require("cors");
 
 const server = express()
 
-const axios = require('axios');
+const axios = require('axios'); // 
 require('dotenv').config();
 
 //import postgress library 
@@ -17,13 +17,15 @@ const pg = require("pg")
 server.use(cors());
 
 server.use(express.json()); // to convert from [] to json to show me the info
+
 //port
 
 const PORT = 3000;
 
 //DB obj
 
-const client = new pg.Client('postgresql://localhost:5432/addmovie');
+const client = new pg.Client('postgresql://localhost:5432/addmovie'); // вміст констроктор
+//port of postgress 
 
 
 //routs
@@ -33,7 +35,14 @@ server.get("/trending", trendingHandler);
 server.get('/search', searchHandler);
 server.get('/idd', movieIdHandler);
 server.get("/getMovies", getMoviewHandler);
+server.get("/getMovies/:newid", getsecMoviewHandler);
+
 server.post("/getMovies", postMovieHandler);
+server.delete("/getMovies/:id", deletMovieHandler);
+
+server.put("/getMovies/:iddd", UPDateMovieHandler);
+
+
 // server.post("/getMovies", secMovieHandler);
 
 server.get('/person', personHandler);
@@ -214,6 +223,7 @@ function personHandler(req, res) {
 
 
 //data base getMoviewHandler
+//get
 function getMoviewHandler(req, res) {
     const sql = `SELECT * from firstMOV`;// to get all data from the table 
     client.query(sql)
@@ -226,36 +236,73 @@ function getMoviewHandler(req, res) {
         })
 }
 
+//post 
 function postMovieHandler(req, res) {
-    const mov = req.body;
+    const mov = req.body; // to get the data from body that inside (the thunder) and insert it to do some updeats & posts 
     const sql = `INSERT INTO firstmov (title,release_date,poster_path,overview)
-VALUES ('${mov.title}','${mov.release_date}','${mov.poster_path}','${mov.overview}');`
+VALUES ('${mov.title}','${mov.release_date}','${mov.poster_path}','${mov.overview}') RETURNING *;`
 
     client.query(sql)
         .then((data) => {
             res.send(data.rows)
         })
 
-        .catch ((error) => {
+        .catch((error) => {
             res.status(500).send(error)
         })
 }
 
+//delete
+function deletMovieHandler(req, res) {
 
-// function secMovieHandler(req, res) {
-//     const mov = req.body;
-//     const sql = `INSERT INTO sec (title,release_date,poster_path,overview)
-// VALUES ('${mov.title}','${mov.release_date}','${mov.poster_path}','${mov.overview}');`
+    // console.log(req.params); to get the path parameter 
 
-//     client.query(sql)
-//         .then((data) => {
-//             res.send(data.rows)
-//         })
+    const newID = req.params.id;
+    const sql = `DELETE FROM firstMOV WHERE id=${newID}`; //sql : structer qyery languge 
+    client.query(sql)
+        .then((data) => {
+            res.status(204).json({});
+            // console.log("was deleted");
+        })
+        .catch((err) => {
+            errorHandler(err, req, res);
+        })
 
-//         .catch ((error) => {
-//             res.status(500).send(error)
-//         })
-// }
+}
+
+// to get specify data from the table &()
+function getsecMoviewHandler(req, res) {
+    const secID = req.params.newid
+    const sql = `SELECT * from firstMOV WHERE id=${secID}`;// to get specify data from the table 
+    client.query(sql)
+        .then((data) => {
+            res.send(data.rows)
+
+        })
+        .catch((err) => {
+            errorHandler(err, req, res)
+        })
+}
+
+
+
+function UPDateMovieHandler(req,res){
+
+const therdID =req.params.iddd;
+// console.log(therdID);
+const show = req.body // to get the data from body and insert it to do some updeats & posts 
+const sql = `UPDATE firstMOV SET title ='${show.title}', overview ='${show.overview},' WHERE id =${therdID} RETURNING *`;
+// console.log(sql);
+client.query(sql)
+.then((data) => {
+    res.send(data.rows)
+})
+
+.catch((err) => {
+    errorHandler(err, req, res);
+})
+
+}
 
 
 
@@ -269,6 +316,9 @@ function errorHandler(error, req, res) {
     }
     res.status(500).send(err)
 }
+
+
+
 
 
 //server port
