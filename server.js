@@ -20,39 +20,44 @@ server.use(express.json()); // to convert from [] to json to show me the info
 
 //port
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 //DB obj
 
-const client = new pg.Client('postgresql://localhost:5432/addmovie'); // вміст констроктор
+const client = new pg.Client(process.env.URL); // вміст констроктор
 //port of postgress 
 
 
 //routs
+//lab11
 server.get("/", homeHandler);
 server.get("/favorite", favoriteHandler)
+
+// lab12
 server.get("/trending", trendingHandler);
 server.get('/search', searchHandler);
+
+
 server.get('/idd', movieIdHandler);
+server.get('/person', personHandler);
+
+
+// lab 13 + 14 
 server.get("/getMovies", getMoviewHandler);
 server.get("/getMovies/:newid", getsecMoviewHandler);
-
 server.post("/getMovies", postMovieHandler);
 server.delete("/getMovies/:id", deletMovieHandler);
-
 server.put("/getMovies/:iddd", UPDateMovieHandler);
 
 
-// server.post("/getMovies", secMovieHandler);
 
-server.get('/person', personHandler);
 server.get("*", defultHandler);
 server.use(errorHandler);
 
 
 
 
-//constroctor
+//constroctor ( lab 12 )
 function Movie(id, title, release_date, poster_path, overview) {
     this.id = id
     this.title = title
@@ -133,6 +138,8 @@ function trendingHandler(req, res) {
     }
 
 }
+
+
 
 //search
 function searchHandler(req, res) {
@@ -220,6 +227,14 @@ function personHandler(req, res) {
         errorHandler(error, req, res)
     }
 }
+
+
+
+
+
+
+
+
 
 
 //data base getMoviewHandler
