@@ -254,8 +254,8 @@ function getMoviewHandler(req, res) {
 //post 
 function postMovieHandler(req, res) {
     const mov = req.body; // to get the data from body that inside (the thunder) and insert it to do some updeats & posts 
-    const sql = `INSERT INTO firstmov (title,release_date,poster_path,overview)
-VALUES ('${mov.title}','${mov.release_date}','${mov.poster_path}','${mov.overview}') RETURNING *;`
+    const sql = `INSERT INTO firstmov (title,release_date,poster_path,overview,comment)
+VALUES ('${mov.title}','${mov.release_date}','${mov.poster_path}','${mov.overview}'.'${mov.comment}') RETURNING *;`
 
     client.query(sql)
         .then((data) => {
@@ -266,6 +266,12 @@ VALUES ('${mov.title}','${mov.release_date}','${mov.poster_path}','${mov.overvie
             res.status(500).send(error)
         })
 }
+
+
+
+
+
+
 
 //delete
 function deletMovieHandler(req, res) {
