@@ -274,7 +274,7 @@ function deletMovieHandler(req, res) {
     // console.log(req.params); to get the path parameter 
 
     const newID = req.params.id;
-    const sql = `DELETE FROM firstMOV WHERE id=${newID}`; //sql : structer qyery languge 
+    const sql = `DELETE FROM firstmov WHERE id=${newID}`; //sql : structer qyery languge 
     client.query(sql)
         .then((data) => {
             res.status(204).json({});
@@ -289,7 +289,7 @@ function deletMovieHandler(req, res) {
 // to get specify data from the table &()
 function getsecMoviewHandler(req, res) {
     const secID = req.params.newid
-    const sql = `SELECT * from firstMOV WHERE id=${secID}`;// to get specify data from the table 
+    const sql = `SELECT * from firstmov WHERE id=${secID}`;// to get specify data from the table 
     client.query(sql)
         .then((data) => {
             res.send(data.rows)
