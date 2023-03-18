@@ -237,7 +237,7 @@ function personHandler(req, res) {
 //data base getMoviewHandler
 //get
 function getMoviewHandler(req, res) {
-    const sql = `SELECT * from firstMOV`;// to get all data from the table 
+    const sql = `SELECT * from firstmov`;// to get all data from the table 
     client.query(sql)
         .then((data) => {
             res.send(data.rows)
