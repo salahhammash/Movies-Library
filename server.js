@@ -248,6 +248,8 @@ function getMoviewHandler(req, res) {
         })
 }
 
+
+
 //post 
 function postMovieHandler(req, res) {
     const mov = req.body; // to get the data from body that inside (the thunder) and insert it to do some updeats & posts 
@@ -258,14 +260,10 @@ VALUES ('${mov.title}','${mov.release_date}','${mov.poster_path}','${mov.overvie
         .then((data) => {
             res.send(data.rows)
         })
-
         .catch((error) => {
             res.status(500).send(error)
         })
 }
-
-
-
 
 
 //delete
@@ -274,11 +272,20 @@ function deletMovieHandler(req, res) {
     // console.log(req.params); to get the path parameter 
 
     const newID = req.params.id;
-    const sql = `DELETE FROM firstmov WHERE id=${newID}`; //sql : structer qyery languge 
+    const sql = `DELETE FROM firstmov WHERE id=${newID} RETURNING *;`; //sql : structer qyery languge 
     client.query(sql)
         .then((data) => {
-            res.status(204).json({});
+            // res.status(204).json({});
             // console.log("was deleted");
+            const sql = `SELECT * from firstmov`;// to get all data from the table 
+            client.query(sql)
+                .then((data) => {
+                    res.send(data.rows)
+        
+                })
+                .catch((err) => {
+                    errorHandler(err, req, res)
+                })
         })
         .catch((err) => {
             errorHandler(err, req, res);
@@ -311,7 +318,18 @@ function UPDateMovieHandler(req, res) {
     // console.log(sql);
     client.query(sql)
         .then((data) => {
-            res.send(data.rows)
+            // res.send(data.rows)
+            const sql = `SELECT * from firstmov`;// to get all data from the table 
+            client.query(sql)
+                .then((data) => {
+                    res.send(data.rows)
+        
+                })
+                .catch((err) => {
+                    errorHandler(err, req, res)
+                })
+
+
         })
 
         .catch((err) => {
