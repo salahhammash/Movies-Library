@@ -75,10 +75,7 @@ function homeHandler(req, res) {
 
     // res.status(200).send(str);
 
-    let newMovie = new Movie(
-        data.title, data.poster_path, data.overview
-
-    )
+    let newMovie = new Movie(data.title, data.poster_path, data.overview)
     res.send(newMovie)
 }
 //favorite 
@@ -271,8 +268,6 @@ VALUES ('${mov.title}','${mov.release_date}','${mov.poster_path}','${mov.overvie
 
 
 
-
-
 //delete
 function deletMovieHandler(req, res) {
 
@@ -307,21 +302,21 @@ function getsecMoviewHandler(req, res) {
 
 
 
-function UPDateMovieHandler(req,res){
+function UPDateMovieHandler(req, res) {
 
-const therdID =req.params.iddd;
-// console.log(therdID);
-const show = req.body // to get the data from body and insert it to do some updeats & posts 
-const sql = `UPDATE firstMOV SET title ='${show.title}', overview ='${show.overview},' WHERE id =${therdID} RETURNING *`;
-// console.log(sql);
-client.query(sql)
-.then((data) => {
-    res.send(data.rows)
-})
+    const therdID = req.params.iddd;
+    // console.log(therdID);
+    const show = req.body // to get the data from body and insert it to do some updeats & posts 
+    const sql = `UPDATE firstMOV SET title ='${show.title}', overview ='${show.overview},' WHERE id =${therdID} RETURNING *`;
+    // console.log(sql);
+    client.query(sql)
+        .then((data) => {
+            res.send(data.rows)
+        })
 
-.catch((err) => {
-    errorHandler(err, req, res);
-})
+        .catch((err) => {
+            errorHandler(err, req, res);
+        })
 
 }
 
