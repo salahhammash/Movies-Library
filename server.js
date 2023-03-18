@@ -314,8 +314,7 @@ function UPDateMovieHandler(req, res) {
     const therdID = req.params.iddd;
     // console.log(therdID);
     const show = req.body // to get the data from body and insert it to do some updeats & posts 
-    const sql = `UPDATE firstMOV SET title ='${show.title}', overview ='${show.overview},' WHERE id =${therdID} RETURNING *`;
-    // console.log(sql);
+    const sql = `UPDATE firstmov SET comment ='${show.comment}' WHERE id =${therdID} RETURNING *`;    // console.log(sql);
     client.query(sql)
         .then((data) => {
             // res.send(data.rows)
